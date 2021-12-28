@@ -25,7 +25,7 @@ namespace Task4
             while(true)
             {
                 (rightNode, leftNode) = Search(key);
-                if ((rightNode != tail) && (rightNode.key.Equals(data))) return false;
+                if ((rightNode != tail) && (rightNode.key == key)) return false;
                 newNode.nextNode = new HarrisReference<Node<T>>(rightNode);
                 if (leftNode.nextNode.CAS(rightNode, newNode)) return true;
             }
@@ -54,7 +54,7 @@ namespace Task4
             {
                 (rightNode, leftNode) = Search(key);
 
-                if (rightNode == tail || !rightNode.key.Equals(key)) {
+                if (rightNode == tail || rightNode.key != key) {
                     return false;
                 }
                 rightNodeNext = rightNode.nextNode;
@@ -115,19 +115,19 @@ namespace Task4
                     {
                         return (rightNode, leftNode);
                     }
+                }
 
-                    if (leftNode.nextNode.CAS(leftNodeNext, rightNode))
+                if (leftNode.nextNode.CAS(leftNodeNext, rightNode))
+                {
+                    if ((rightNode != tail) && rightNode.nextNode.IsMarked)
                     {
-                        if ((rightNode != tail) && rightNode.nextNode.IsMarked)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            return (rightNode, leftNode);
-                        }
+                        continue;
                     }
-                }    
+                    else
+                    {
+                        return (rightNode, leftNode);
+                    }
+                }
             }
         }
     }
